@@ -56,6 +56,12 @@ public class PassengerController {
         return passenger;
     }
 
+    @GetMapping("/details/{id}")
+    public Passenger getPassengerFromWithoutFlightDetails(@PathVariable Long id) {
+        Passenger passenger = passengerServiceImpl.getPassenger(id);
+        return passenger;
+    }
+
     @DeleteMapping ("/delete/{id}")
     public String deletePassengerFromId(@PathVariable Long id) {
         return passengerServiceImpl.deletePassenger(id);
