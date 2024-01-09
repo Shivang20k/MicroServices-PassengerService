@@ -1,8 +1,11 @@
 package com.micro.passenger.service.Controller;
 
+import com.micro.passenger.service.FeignClient.BookingClient;
+import com.micro.passenger.service.entity.FlightDetails;
 import com.micro.passenger.service.entity.Passenger;
 import com.micro.passenger.service.service.PassengerServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +24,9 @@ public class PassengerController {
     @Autowired
     PassengerServiceImpl passengerServiceImpl;
 
+    @Autowired
+    BookingClient bookingClient;
+
     @PostMapping("/create")
     public Passenger createPassenger(@RequestBody Passenger passenger) {
         return passengerServiceImpl.createPassenger(passenger);
@@ -33,12 +39,21 @@ public class PassengerController {
 
     @GetMapping("/")
     public List<Passenger> getAllPassengers() {
-        return passengerServiceImpl.getAllPassengers();
+        return passengerServiceImpl.getAllPassengers()
+                .stream()
+                .map(p ->
+                    { p.setFlightDetails(bookingClient.getFlightBookingDetailsForPassengerId(p.getId()));
+                      return p;
+                    })
+                .toList();
     }
 
     @GetMapping("/{id}")
     public Passenger getPassengerFromId(@PathVariable Long id) {
-        return passengerServiceImpl.getPassenger(id);
+        Passenger passenger = passengerServiceImpl.getPassenger(id);
+        List< FlightDetails> flightsForPassenger = bookingClient.getFlightBookingDetailsForPassengerId(id);
+        passenger.setFlightDetails(flightsForPassenger);
+        return passenger;
     }
 
     @DeleteMapping ("/delete/{id}")

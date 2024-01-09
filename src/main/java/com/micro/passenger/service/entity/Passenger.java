@@ -11,6 +11,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -33,6 +35,8 @@ public class Passenger {
 
     @Column(name="password")
     private String password;
+
+    transient private List<FlightDetails> flightDetails;
 
     public Passenger updateAllDetails(Passenger passengerToUpdate) {
         this.name = passengerToUpdate.getName();
