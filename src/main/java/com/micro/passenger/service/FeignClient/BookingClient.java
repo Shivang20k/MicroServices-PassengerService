@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
-@FeignClient(url = "http://localhost:5050", value = "BookingClient")
+@FeignClient(name = "BOOKING-SERVICE") // SINCE WE HAVE BOOKING SERVICE APP. NAME IN SERVICE REGISTRY SO USE THIS INSTEAD OF HARD CODED URL
 public interface BookingClient {
 
     @GetMapping("/booking/passengerId/{passengerId}")               //this mapping url should be same as in booking service which is already there
